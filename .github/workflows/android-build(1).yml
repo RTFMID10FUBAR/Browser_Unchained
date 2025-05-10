@@ -1,0 +1,40 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y zip unzip openjdk-11-jdk python3-pip python3-setuptools git \
+          libffi-dev libssl-dev libncurses5 libncurses5-dev libncursesw5-dev \
+          zlib1g zlib1g-dev libsqlite3-dev libgdbm-dev libbz2-dev libreadline-dev \
+          liblzma-dev build-essential autoconf libtool pkg-config
+        python3 -m pip install --upgrade pip virtualenv
+        virtualenv venv
+        source venv/bin/activate
+        pip install buildozer cython
+
+    - name: Build APK
+      run: |
+        source venv/bin/activate
+        buildozer android debug
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: browser-unchained-apk
+        path: bin/*.apk
