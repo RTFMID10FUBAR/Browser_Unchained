@@ -15,6 +15,7 @@ jobs:
       - name: Run Buildozer in Docker
         run: |
           docker run --rm -v "$PWD":/home/user/app \
+            -e SDK_VERSION=33.0.2 \
             kivy/buildozer \
             buildozer android debug
 
