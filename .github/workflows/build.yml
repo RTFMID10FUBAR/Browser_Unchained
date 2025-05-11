@@ -15,9 +15,9 @@ jobs:
       - name: Run Buildozer in Docker
         run: |
           docker run --rm -v "$PWD":/home/user/app \
-            -e SDK_VERSION=33.0.2 \
-            kivy/buildozer \
-            buildozer android debug
+            kivy/buildozer /bin/bash -c "
+              sdkmanager 'build-tools;33.0.2' && \
+              buildozer android debug"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
